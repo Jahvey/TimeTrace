@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_item_icon"
+        android:layout_width="65dp"
+        android:layout_height="40dp"
+        android:contentDescription="@string/iv_item_icon" />
+
+    <TextView
+        android:id="@+id/tv_item_appName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/iv_item_icon"
+        android:layout_toRightOf="@id/iv_item_icon"
+        android:text="@string/tv_item_appName" />
+
+    <TextView
+        android:id="@+id/tv_item_category"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_item_icon"
+        android:layout_toRightOf="@id/iv_item_icon"
+        android:text="@string/tv_item_category" />
+
+    <TextView
+        android:id="@+id/tv_item_startTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/iv_item_icon"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:text="@string/tv_item_startTime" />
+
+    <TextView
+        android:id="@+id/tv_item_live_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_item_icon"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:text="@string/tv_item_liveTime" />
+
+</RelativeLayout>

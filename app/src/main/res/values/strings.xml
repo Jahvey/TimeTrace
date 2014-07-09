@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TimeTrace</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="ib_monitor">Switch to monitor page</string>
+    <string name="ib_analyze">Switch to analyze page</string>
+    <string name="ib_setting">Switch to setting page</string>
+    <string name="tv_monitor_title">Running apps…</string>
+
+    <string name="iv_item_icon">Process icon</string>
+    <string name="tv_item_appName">app name</string>
+    <string name="tv_item_category">Process category</string>
+    <string name="tv_item_startTime">0, 00:00:00</string>
+    <string name="tv_item_liveTime">0, 00:00:00</string>
+
+    <string name="tv_chart_interval">select time interval</string>
+    <string name="rb_chart_interval_last_day">last day</string>
+    <string name="rb_chart_interval_last_week">last week</string>
+    <string name="rb_chart_interval_last_month">last month</string>
+    <string name="tv_chart_type">select chart type</string>
+    <string name="rb_chart_type_pie">pie chart</string>
+    <string name="rb_chart_type_bar">bar chart</string>
+    <string name="rb_chart_type_line">line chart</string>
+    <string name="tv_chart_ignore">ignore system process</string>
+    <string name="rb_chart_ignore_yes">yes, ignore system processes</string>
+    <string name="rb_chart_ignore_no">select chart type</string>
+    <string name="ib_share">Share with friends</string>
+
+    <string name="ib_setting_contact">Contact us with a brief message</string>
+    <string name="tv_setting_contact">Copyright  © 2014 HappyStudy.org All Rights Reserved</string>
+
+    <string name="ib_detail_plus">define user\'s category</string>
+    <string name="ib_detail_ok">change category</string>
+    <string name="ib_detail_cancel">use current category</string>
+
+    <string name="tv_detail">process details</string>
+
+    <string name="iv_welcome">welcome page</string>
+    <string name="tv_welcome_title">Welcome\n2\nTimeTrace…</string>
+    <string name="tv_welcome_author">by HappyStudy…\n</string>
+    <string name="tv_welcome_guide">touch to continue…</string>
+
+
+</resources>

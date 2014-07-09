@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
+
+    <RelativeLayout
+        android:id="@+id/rl_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <ImageButton
+            android:id="@+id/ib_detail_plus"
+            android:layout_width="65dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:contentDescription="@string/ib_detail_plus"
+            android:src="@drawable/plus" />
+
+        <ImageButton
+            android:id="@+id/ib_detail_ok"
+            android:layout_width="65dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/ib_detail_ok"
+            android:src="@drawable/tick" />
+
+        <ImageButton
+            android:id="@+id/ib_detail_cancel"
+            android:layout_width="65dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/ib_detail_cancel"
+            android:src="@drawable/error" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tv_detail"
+                android:textSize="18sp" />
+
+            <RadioGroup
+                android:id="@+id/rg_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <RadioButton
+                    android:id="@+id/rb_detail_social"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="social" />
+
+                <RadioButton
+                    android:id="@+id/rb_detail_study"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="study" />
+
+                <RadioButton
+                    android:id="@+id/rb_detail_enterntain"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="entertain" />
+
+                <RadioButton
+                    android:id="@+id/rb_detail_undefined"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="undefined" />
+
+                <RadioButton
+                    android:id="@+id/rb_detail_system"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="system" />
+            </RadioGroup>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

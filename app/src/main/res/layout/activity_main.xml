@@ -1,0 +1,47 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.atomu.timetrace.app.MainActivity">
+
+    <RelativeLayout
+        android:id="@+id/rl_viewer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+
+        <ImageButton
+            android:id="@+id/ib_monitor"
+            android:layout_width="65dp"
+            android:layout_height="40dp"
+            android:layout_alignParentLeft="true"
+            android:contentDescription="@string/ib_monitor"
+            android:src="@drawable/search" />
+
+        <ImageButton
+            android:id="@+id/ib_analyze"
+            android:layout_width="65dp"
+            android:layout_height="40dp"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/ib_analyze"
+            android:src="@drawable/bulb" />
+
+        <ImageButton
+            android:id="@+id/ib_setting"
+            android:layout_width="65dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:contentDescription="@string/ib_setting"
+            android:src="@drawable/engine" />
+
+    </RelativeLayout>
+
+    <include layout="@layout/rl_monitor" />
+
+    <include layout="@layout/rl_analyze" />
+
+    <include layout="@layout/rl_setting" />
+
+</RelativeLayout>
