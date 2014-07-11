@@ -12,10 +12,7 @@ import android.widget.TextView;
 
 import com.atomu.timetrace.app.R;
 import com.atomu.timetrace.effect.TitleScrollListener;
-import com.atomu.timetrace.process.ProcessInfo;
-import com.atomu.timetrace.process.ProcessInfoProvider;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -81,8 +78,7 @@ public class Monitor {
 //            sb.append(new DecimalFormat("0.0000").format(locationInfo.getLongitude()));
 //            sb.append(", ");
 //            sb.append(new DecimalFormat("0.0000").format(locationInfo.getLatitude()));
-//            sb.append(")");
-//
+//            sb.append(")");//
 //                    ((TextView) getRootView().findViewById(R.id.tv_monitor_title)).setText(sb.toString());
 //        }
 //

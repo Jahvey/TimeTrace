@@ -9,9 +9,9 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:contentDescription="@string/img_welcome_description"
         android:scaleType="centerCrop"
-        android:src="@drawable/welcome"
-        android:contentDescription="@string/img_welcome_description" />
+        android:src="@drawable/welcome" />
 
     <TextView
         android:layout_width="wrap_content"

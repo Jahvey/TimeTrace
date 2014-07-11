@@ -5,34 +5,54 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/iv_item_icon"
+        android:id="@+id/iv_tag_item_icon"
         android:layout_width="65dp"
         android:layout_height="40dp"
-        android:contentDescription="@string/process_info_icon" />
+        android:contentDescription="@string/process_info_icon"
+        android:src="@drawable/ic_launcher" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@id/iv_tag_item_icon"
+        android:layout_alignBottom="@id/iv_tag_item_icon"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_process_tag_user_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:text="@string/process_info_is_user_process" />
+
+        <Button
+            android:id="@+id/btn_process_tag_ignore"
+            android:layout_width="48dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:background="@android:color/holo_blue_light"
+            android:text="@string/ctrl_bar_ignore_description"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_process_tag_app_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_toRightOf="@id/iv_tag_item_icon"
         android:text="@string/process_info_app_name" />
-
-    <TextView
-        android:id="@+id/tv_process_tag_user_app"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:text="is user app" />
-
 
     <TextView
         android:id="@+id/tv_process_tag_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_tag_item_icon"
         android:layout_below="@id/tv_process_tag_app_name"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:text="tag" />
-
+        android:layout_toRightOf="@id/iv_tag_item_icon"
+        android:text="@string/process_info_tag" />
 
 </RelativeLayout>

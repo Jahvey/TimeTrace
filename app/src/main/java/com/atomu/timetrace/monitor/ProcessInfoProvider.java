@@ -3,9 +3,13 @@ package com.atomu.timetrace.monitor;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.os.Debug;
 
 import com.atomu.timetrace.app.R;
+import com.atomu.timetrace.monitor.ProcessInfo;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -17,7 +21,13 @@ import java.util.List;
  */
 public class ProcessInfoProvider {
 
-    private boolean filterApp(ApplicationInfo info) {
+    private Context context;
+
+    public ProcessInfoProvider(Context c) {
+        setContext(c);
+    }
+
+    private boolean isUserApp(ApplicationInfo info) {
         if ((info.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
             return true;
         } else if ((info.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
@@ -31,48 +41,79 @@ public class ProcessInfoProvider {
                 IMPORTANCE_BACKGROUND;
     }
 
+    private long getMemSize(ActivityManager am, int pid) {
+        long memorySize = 0;
+        Debug.MemoryInfo[] memoryInfoArr = am.getProcessMemoryInfo(new int[]{pid});
+
+        if (memoryInfoArr != null && memoryInfoArr.length > 0)
+            memorySize = memoryInfoArr[0].getTotalPrivateDirty();
+        return memorySize;
+    }
+
+    private String getAppName(ApplicationInfo applicationInfo, PackageManager pm) {
+        if (applicationInfo == null)
+            return null;
+
+        CharSequence cs = applicationInfo.loadLabel(pm);
+        if (cs != null)
+            return cs.toString();
+        return null;
+    }
+
     public List<ProcessInfo> getProcessInfoList() {
-        ActivityManager am = (ActivityManager) Monitor.getContext().
+        ActivityManager am = (ActivityManager) context.
                 getSystemService(Context.ACTIVITY_SERVICE);
-        PackageManager pm = Monitor.getContext().getPackageManager();
+        PackageManager pm = context.getPackageManager();
         List<ActivityManager.RunningAppProcessInfo> runningAppProcesses;
         runningAppProcesses = am.getRunningAppProcesses();
         List<ProcessInfo> processInfoList = new ArrayList<ProcessInfo>();
 
-        if (runningAppProcesses != null) {
+        if (runningAppProcesses != null && pm != null && am != null)
             for (ActivityManager.RunningAppProcessInfo info : runningAppProcesses) {
                 ProcessInfo processInfo = new ProcessInfo();
+                String packageName = info.processName;
 
                 processInfo.setPid(info.pid);
-                long memorySize = am.getProcessMemoryInfo(new int[]{info.pid})[0].getTotalPrivateDirty();
-                processInfo.setMemSize(memorySize);
-                String packageName = info.processName;
+                processInfo.setMemSize(getMemSize(am, info.pid));
                 processInfo.setPackName(packageName);
                 processInfo.setAlive(true);
                 processInfo.setActive(isBackgroundProcess(info));
-
                 try {
-                    ApplicationInfo applicationInfo = pm.getApplicationInfo(packageName, 0);
+                    PackageInfo pi = pm.getPackageInfo(packageName, 0);
+                    ApplicationInfo applicationInfo = pi.applicationInfo;
+                    if (applicationInfo != null) {
+                        boolean isUserApp = isUserApp(applicationInfo);
 
-                    processInfo.setUserProcess(filterApp(applicationInfo));
-                    processInfo.setIcon(applicationInfo.loadIcon(pm));
-                    processInfo.setAppName(applicationInfo.loadLabel(pm).toString());
-                } catch (Exception e) {
-                    processInfo.setUserProcess(false);
-                    processInfo.setIcon(Monitor.getContext().getResources().getDrawable(R.drawable.ic_launcher));
-                    processInfo.setAppName(packageName);
+                        processInfo.setUserProcess(isUserApp);
+                        processInfo.setIcon(applicationInfo.loadIcon(pm));
+                        processInfo.setAppName(getAppName(applicationInfo, pm));
+
+                        Resources res = context.getResources();
+                        if (isUserApp)
+                            processInfo.setTag(res.getInteger(R.integer.process_tag_key_lifestyle));
+                        else
+                            processInfo.setTag(res.getInteger(R.integer.process_tag_key_system));
+
+                        // to be determined later
+                        processInfo.setStartTime(Calendar.getInstance());
+                        processInfo.setLiveTime(0);
+
+                        processInfoList.add(processInfo);
+                    }
+                } catch (Exception ignored) {
                 }
 
-                // to be determined later
-                processInfo.setCategory(ProcessInfoMeta._TAG_BUSINESS);
-                processInfo.setStartTime(Calendar.getInstance());
-                processInfo.setLiveTime(0);
-
-                processInfoList.add(processInfo);
             }
-        }
 
         return processInfoList;
+    }
+
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
     }
 
 }

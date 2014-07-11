@@ -1,6 +1,9 @@
 package com.atomu.timetrace.monitor;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+
+import com.atomu.timetrace.app.R;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -11,7 +14,7 @@ import java.util.Calendar;
  */
 public class ProcessInfo {
     private String appName;
-    private String category;
+    private int tag;
     private Drawable icon;
     private long liveTime;
     private long memSize;
@@ -30,12 +33,20 @@ public class ProcessInfo {
         this.appName = appName;
     }
 
-    public String getCategory() {
-        return category;
+    public int getTag() {
+        return tag;
     }
 
-    public void setCategory(String cate) {
-        this.category = cate;
+    public void setTag(int tag) {
+        this.tag = tag;
+    }
+
+    public void setTag(Context context, String tag) {
+        this.tag = new ProcessInfoMeta().getKeyFromTag(context, tag);
+    }
+
+    public String getTagString(Context context) {
+        return new ProcessInfoMeta().getTagFromKey(context, this.tag);
     }
 
     public Drawable getIcon() {
@@ -82,12 +93,12 @@ public class ProcessInfo {
         return startTime;
     }
 
-    public void setStartTime(Calendar startTime) {
-        this.startTime = startTime.getTimeInMillis();
-    }
-
     public void setStartTime(long startTime) {
         this.startTime = startTime;
+    }
+
+    public void setStartTime(Calendar startTime) {
+        this.startTime = startTime.getTimeInMillis();
     }
 
     public boolean isUserProcess() {
@@ -114,8 +125,8 @@ public class ProcessInfo {
         this.active = a;
     }
 
-    public String getStartTimeString() {
-        SimpleDateFormat sdf = new SimpleDateFormat(ProcessInfoMeta.DATE_FORMAT);
+    public String getStartTimeString(Context context) {
+        SimpleDateFormat sdf = new SimpleDateFormat(context.getString(R.string.process_info_date_format));
         Calendar start = Calendar.getInstance();
         start.setTimeInMillis(this.startTime);
 
@@ -128,6 +139,7 @@ public class ProcessInfo {
         long diffHours = this.liveTime / (60 * 60 * 1000) % 24;
         long diffDays = this.liveTime / (24 * 60 * 60 * 1000);
 
-        return String.format(ProcessInfoMeta.TIME_FORMAT, diffDays, diffHours, diffMinutes, diffSecs);
+        return String.format("%d,  %d:%d:%d", diffDays, diffHours, diffMinutes, diffSecs);
     }
+
 }

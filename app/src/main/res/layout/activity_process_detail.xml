@@ -18,7 +18,6 @@
             android:layout_width="65dp"
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
-            android:contentDescription="create a new tag"
             android:src="@drawable/plus" />
 
         <ImageButton

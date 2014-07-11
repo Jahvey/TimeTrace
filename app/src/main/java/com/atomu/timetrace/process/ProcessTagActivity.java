@@ -7,18 +7,21 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.atomu.timetrace.app.MainActivity;
 import com.atomu.timetrace.app.R;
 import com.atomu.timetrace.effect.TitleScrollListener;
+import com.atomu.timetrace.monitor.ProcessInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,6 +135,7 @@ public class ProcessTagActivity extends Activity {
     }
 
     static class ProcessTagItemViewHolder {
+        ImageView icon;
         TextView appName;
         TextView isUserApp;
         TextView tag;
@@ -163,11 +167,37 @@ public class ProcessTagActivity extends Activity {
 
             ProcessInfo info = processInfoList.get(i);
 
+            this.holder.icon.setImageDrawable(info.getIcon());
             this.holder.appName.setText(info.getAppName());
-            this.holder.isUserApp.setText(info.isUserProcess() + "");
             this.holder.tag.setText(info.getTagString(ProcessTagActivity.this));
+            if (info.isUserProcess())
+                this.holder.isUserApp.setText("usr");
+            else
+                this.holder.isUserApp.setText("sys");
 
             this.view.setTag(this.holder);
+            this.view.setOnTouchListener(new View.OnTouchListener() {
+                float position = 0;
+
+                @Override
+                public boolean onTouch(View view, MotionEvent motionEvent) {
+                    Button btn_ignore = (Button) view.findViewById(R.id.btn_process_tag_ignore);
+
+                    switch (motionEvent.getAction()){
+                        case MotionEvent.ACTION_DOWN:
+                            position = motionEvent.getX();
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            if (motionEvent.getX() < position){
+                                btn_ignore.setVisibility(View.VISIBLE);
+                            } else {
+                                btn_ignore.setVisibility(View.GONE);
+                            }
+                           break;
+                    }
+                    return true;
+                }
+            });
 
             return this.view;
         }
@@ -177,6 +207,7 @@ public class ProcessTagActivity extends Activity {
                 view = View.inflate(ProcessTagActivity.this, R.layout.process_tag_item, null);
                 holder = new ProcessTagItemViewHolder();
 
+                holder.icon = (ImageView) view.findViewById(R.id.iv_tag_item_icon);
                 holder.appName = (TextView) view.findViewById(R.id.tv_process_tag_app_name);
                 holder.isUserApp = (TextView) view.findViewById(R.id.tv_process_tag_user_app);
                 holder.tag = (TextView) view.findViewById(R.id.tv_process_tag_tag);
@@ -186,9 +217,5 @@ public class ProcessTagActivity extends Activity {
             }
         }
 
-        private boolean isFirstTime() {
-            SharedPreferences spf = ProcessTagActivity.this.getSharedPreferences("preference", Context.MODE_PRIVATE);
-            return spf.getBoolean("isFirstTime", true);
-        }
     }
 }

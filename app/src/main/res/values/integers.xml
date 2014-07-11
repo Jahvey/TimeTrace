@@ -15,5 +15,6 @@
     <integer name="process_tag_key_system">13</integer>
     <integer name="process_tag_key_tool">14</integer>
     <integer name="process_tag_key_travel">15</integer>
+    <integer name="process_tag_key_ignore">16</integer>
     <integer name="process_tag_key_unknown">0</integer>
 </resources>
