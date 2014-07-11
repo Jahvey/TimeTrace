@@ -4,22 +4,22 @@
     android:id="@+id/rl_monitor"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_above="@id/rl_viewer" >
+    android:layout_above="@id/rl_viewer">
 
     <TextView
         android:id="@+id/tv_monitor_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/darker_gray"
         android:gravity="center"
-        android:text="@string/tv_monitor_title"
+        android:text="@string/act_monitor_title"
         android:textSize="20sp" />
 
     <ListView
         android:id="@+id/lv_monitor_process"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_above="@id/rl_viewer"
-        android:layout_below="@id/tv_monitor_title">
+        android:layout_above="@id/rl_viewer">
 
     </ListView>
 

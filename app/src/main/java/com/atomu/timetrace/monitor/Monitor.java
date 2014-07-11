@@ -1,23 +1,21 @@
 package com.atomu.timetrace.monitor;
 
 import android.content.Context;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.atomu.timetrace.app.R;
+import com.atomu.timetrace.effect.TitleScrollListener;
+import com.atomu.timetrace.process.ProcessInfo;
+import com.atomu.timetrace.process.ProcessInfoProvider;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -26,16 +24,17 @@ import java.util.List;
  */
 public class Monitor {
 
-    final static int REFRESH_PROCESS_DELAY = 10000;
-    final static int REFRESH_LOCATION_DELAY = 10000;
-    final static int REFRESH_PROCESS_MSG = 1000;
+    final static int REFRESH_VIEW_DELAY = 10 * 1000;
+    final static int REFRESH_LOCATION_DELAY = 10 * 60 * 1000;
+    final static int REFRESH_VIEW_MSG = 1000;
     final static int REFRESH_LOCATION_MSG = 2000;
 
-    static public Context context;
-    static public View rootView;
-    private ProcessInfoProvider provider;
+    public Context context;
+    public View rootView;
+    private ProcessInfoProvider processInfoProvider;
     private List<ProcessInfo> processInfoList;
-    private ProcessItemAdapter adapter;
+    private LocationInfoProvider locationInfoProvider;
+    private ProcessItemAdapter processItemAdapter;
     private ListView lv_monitor_process;
     private TextView tv_monitor_title;
 
@@ -47,97 +46,62 @@ public class Monitor {
 
         lv_monitor_process = (ListView) rootView.findViewById(R.id.lv_monitor_process);
         tv_monitor_title = (TextView) rootView.findViewById(R.id.tv_monitor_title);
-        lv_monitor_process.setOnScrollListener(new TitleListener());
+        lv_monitor_process.setOnScrollListener(new TitleScrollListener(tv_monitor_title));
 
-        provider = new ProcessInfoProvider();
-        processInfoList = provider.getProcessInfoList();
-        adapter = new ProcessItemAdapter();
-        lv_monitor_process.setAdapter(adapter);
+        processInfoProvider = new ProcessInfoProvider(context);
+        processInfoList = processInfoProvider.getProcessInfoList();
+        processItemAdapter = new ProcessItemAdapter();
+        lv_monitor_process.setAdapter(processItemAdapter);
+
+        locationInfoProvider = new LocationInfoProvider(context);
         refreshHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                switch (msg.what){
-                    case Monitor.REFRESH_PROCESS_MSG:
-                        processInfoList = provider.getProcessInfoList();
-                        adapter.notifyDataSetChanged();
+                switch (msg.what) {
+                    case Monitor.REFRESH_VIEW_MSG:
+                        processInfoList = processInfoProvider.getProcessInfoList();
+                        processItemAdapter.notifyDataSetChanged();
+//                        updateTitle(locationInfoProvider.getLocationInfo());
                         break;
                     case Monitor.REFRESH_LOCATION_MSG:
-                        LocationManager gpsManager = (LocationManager) getContext().
-                                getSystemService(Context.LOCATION_SERVICE);
-                        Location location = gpsManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-//                        if (location  == null){
-//                            gpsManager.requestLocationUpdates("best_provider", 60000, 1, new GpsLocationListener());
-//                        }
-//                        location = gpsManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                        printGpsLocation(location);
-//                        Log.d("monitor", location.getLongitude()+", "+location.getLatitude());
+                        locationInfoProvider.updateLocationInfo();
                         break;
                 }
             }
         };
         refreshProcess();
         refreshLocation();
+
     }
 
-    private void printGpsLocation(Location location){
-        if( location != null ) {
-            /*
-            location.getAccuracy();    精度
-            location.getAltitude();    高度 : 海拔
-            location.getBearing();     导向
-            location.getSpeed();       速度
-            location.getLatitude();    纬度
-            location.getLongitude();   经度
-            location.getTime();        UTC时间 以毫秒计
-            */
+//    private void updateTitle(LocationInfo locationInfo) {
+//        if (locationInfo != null) {
+//            StringBuffer sb = new StringBuffer();
+//            sb.append("location: (");
+//            sb.append(new DecimalFormat("0.0000").format(locationInfo.getLongitude()));
+//            sb.append(", ");
+//            sb.append(new DecimalFormat("0.0000").format(locationInfo.getLatitude()));
+//            sb.append(")");
+//
+//                    ((TextView) getRootView().findViewById(R.id.tv_monitor_title)).setText(sb.toString());
+//        }
+//
+//    }
 
-            Log.d("monitor", "Accuracy : " + location.getAccuracy() +
-                    "\nAltitude : " + location.getAltitude() +
-                    "\nBearing : " + location.getBearing() +
-                    "\nSpeed : " + location.getSpeed() +
-                    "\nLatitude ：" + location.getLatitude() +
-                    "\nLongitude : " + location.getLongitude() +
-                    "\nTime : " + location.getTime());
-        }
+    public Context getContext() {
+        return this.context;
     }
 
-    private class GpsLocationListener implements LocationListener{
-
-        @Override
-        public void onLocationChanged(Location location) {
-            printGpsLocation(location);
-        }
-
-        @Override
-        public void onStatusChanged(String s, int i, Bundle bundle) {
-            Log.d("monitor", "ProviderDisabled: " + s + i);
-        }
-
-        @Override
-        public void onProviderEnabled(String s) {
-            Log.d("monitor", "ProviderEnabled: "+s);
-        }
-
-        @Override
-        public void onProviderDisabled(String s) {
-            Log.d("monitor", "ProviderDisabled: "+s);
-        }
+    public void setContext(Context c) {
+        this.context = c;
     }
 
-    static public Context getContext() {
-        return context;
+    public View getRootView() {
+        return this.rootView;
     }
 
-    static public void setContext(Context c) {
-        context = c;
-    }
-
-    static public View getRootView() {
-        return rootView;
-    }
-
-    static public void setRootView(View v) {
-        rootView = v;
+    public void setRootView(View v) {
+        this.rootView = v;
     }
 
     private void refreshProcess() {
@@ -146,9 +110,9 @@ public class Monitor {
             @Override
             public void run() {
                 while (!Thread.currentThread().isInterrupted()) {
-                    refreshHandler.sendEmptyMessage(Monitor.REFRESH_PROCESS_MSG);
+                    refreshHandler.sendEmptyMessage(Monitor.REFRESH_VIEW_MSG);
                     try {
-                        Thread.sleep(Monitor.REFRESH_PROCESS_DELAY);
+                        Thread.sleep(Monitor.REFRESH_VIEW_DELAY);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -157,7 +121,7 @@ public class Monitor {
         }).start();
     }
 
-    private void refreshLocation(){
+    private void refreshLocation() {
 
         new Thread(new Runnable() {
             @Override
@@ -181,32 +145,6 @@ public class Monitor {
         TextView startTime;
         TextView liveTime;
         ProcessInfo info;
-    }
-
-    private class TitleListener implements AbsListView.OnScrollListener {
-        int lastPosition = 0;
-
-        @Override
-        public void onScrollStateChanged(AbsListView absListView, int i) {
-            switch (i) {
-                case AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
-                    lastPosition = absListView.getLastVisiblePosition();
-                    break;
-                case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:
-                    if (absListView.getLastVisiblePosition() < lastPosition) {
-                        tv_monitor_title.setVisibility(View.VISIBLE);
-                    } else {
-                        tv_monitor_title.setVisibility(View.GONE);
-                    }
-                    break;
-            }
-
-        }
-
-        @Override
-        public void onScroll(AbsListView absListView, int i, int i2, int i3) {
-
-        }
     }
 
     private class ProcessItemAdapter extends BaseAdapter {
@@ -238,8 +176,8 @@ public class Monitor {
             itemViewHolder.info = info;
             itemViewHolder.icon.setImageDrawable(info.getIcon());
             itemViewHolder.appName.setText(info.getAppName());
-            itemViewHolder.category.setText(info.getCategory());
-            itemViewHolder.startTime.setText(info.getStartTimeString());
+            itemViewHolder.category.setText(info.getTagString(context));
+            itemViewHolder.startTime.setText(info.getStartTimeString(context));
             itemViewHolder.liveTime.setText(info.getLiveTimeString());
 
             itemView.setTag(itemViewHolder);

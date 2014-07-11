@@ -17,7 +17,7 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:src="@drawable/email"
-        android:contentDescription="@string/ib_setting_contact" />
+        android:contentDescription="@string/ctrl_bar_contact_description" />
 
     <TextView
         android:id="@+id/tv_setting_contact"
@@ -29,7 +29,7 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:gravity="center"
-        android:text="@string/tv_setting_contact" />
+        android:text="@string/copyright_description" />
 
     <ListView
         android:id="@+id/lv_process_setting"

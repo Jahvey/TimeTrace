@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:src="@drawable/welcome"
-        android:contentDescription="@string/iv_welcome" />
+        android:contentDescription="@string/img_welcome_description" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,7 +19,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:gravity="center_horizontal"
-        android:text="@string/tv_welcome_title"
+        android:text="@string/act_welcome_title"
         android:textColor="@android:color/white"
         android:textSize="26sp" />
 
@@ -29,7 +29,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="130dp"
-        android:text="@string/tv_welcome_author"
+        android:text="@string/act_welcome_authority"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
 
@@ -39,7 +39,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
-        android:text="@string/tv_welcome_guide"
+        android:text="@string/act_welcome_guide"
         android:textColor="@android:color/white"
         android:textSize="16sp" />
 

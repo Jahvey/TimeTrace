@@ -15,7 +15,7 @@
         android:id="@+id/tv_chart_interval"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/tv_chart_interval"
+        android:text="@string/chart_interval_title"
         android:textSize="18sp" />
 
     <RadioGroup
@@ -29,19 +29,19 @@
             android:id="@+id/rb_chart_interval_last_day"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rb_chart_interval_last_day" />
+            android:text="@string/chart_interval_day" />
 
         <RadioButton
             android:id="@+id/rb_chart_interval_last_week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rb_chart_interval_last_week" />
+            android:text="@string/chart_interval_week" />
 
         <RadioButton
             android:id="@+id/rb_chart_interval_last_month"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rb_chart_interval_last_month" />
+            android:text="@string/chart_interval_month" />
 
     </RadioGroup>
 
@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rg_chart_interval"
-        android:text="@string/tv_chart_type"
+        android:text="@string/chart_type_title"
         android:textSize="18sp" />
 
     <RadioGroup
@@ -64,19 +64,19 @@
             android:id="@+id/rb_chart_type_pie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rb_chart_type_pie" />
+            android:text="@string/chart_type_pie" />
 
         <RadioButton
             android:id="@+id/rb_chart_type_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rb_chart_type_bar" />
+            android:text="@string/chart_type_bar" />
 
         <RadioButton
             android:id="@+id/rb_chart_type_line"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rb_chart_type_line" />
+            android:text="@string/chart_type_line" />
 
     </RadioGroup>
 
@@ -85,7 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rg_chart_type"
-        android:text="@string/tv_chart_ignore"
+        android:text="@string/chart_ignore_title"
         android:textSize="18sp" />
 
     <RadioGroup
@@ -99,13 +99,13 @@
             android:id="@+id/rb_chart_ignore_yes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rb_chart_ignore_yes" />
+            android:text="@string/chart_ignore_yes" />
 
         <RadioButton
             android:id="@+id/rb_chart_ignore_no"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/rb_chart_ignore_no" />
+            android:text="@string/chart_ignore_no" />
 
     </RadioGroup>
 
@@ -114,7 +114,7 @@
         android:layout_width="65dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
-        android:contentDescription="@string/ib_share"
+        android:contentDescription="@string/ctrl_bar_share_description"
         android:src="@drawable/share" />
 
     <RelativeLayout

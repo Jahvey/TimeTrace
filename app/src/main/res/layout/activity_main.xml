@@ -17,7 +17,7 @@
             android:layout_width="65dp"
             android:layout_height="40dp"
             android:layout_alignParentLeft="true"
-            android:contentDescription="@string/ib_monitor"
+            android:contentDescription="@string/ctrl_bar_monitor_description"
             android:src="@drawable/search" />
 
         <ImageButton
@@ -25,7 +25,7 @@
             android:layout_width="65dp"
             android:layout_height="40dp"
             android:layout_centerInParent="true"
-            android:contentDescription="@string/ib_analyze"
+            android:contentDescription="@string/ctrl_bar_analyze_description"
             android:src="@drawable/bulb" />
 
         <ImageButton
@@ -33,7 +33,7 @@
             android:layout_width="65dp"
             android:layout_height="40dp"
             android:layout_alignParentRight="true"
-            android:contentDescription="@string/ib_setting"
+            android:contentDescription="@string/ctrl_bar_setting_description"
             android:src="@drawable/engine" />
 
     </RelativeLayout>
