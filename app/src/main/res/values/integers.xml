@@ -1,20 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="process_tag_key_beautification">1</integer>
-    <integer name="process_tag_key_business">2</integer>
-    <integer name="process_tag_key_communication">3</integer>
-    <integer name="process_tag_key_education">4</integer>
-    <integer name="process_tag_key_finance">5</integer>
-    <integer name="process_tag_key_lifestyle">6</integer>
-    <integer name="process_tag_key_media">7</integer>
-    <integer name="process_tag_key_newsstand">8</integer>
-    <integer name="process_tag_key_online_shopping">9</integer>
-    <integer name="process_tag_key_optimization">10</integer>
-    <integer name="process_tag_key_reading">11</integer>
-    <integer name="process_tag_key_social_network">12</integer>
-    <integer name="process_tag_key_system">13</integer>
-    <integer name="process_tag_key_tool">14</integer>
-    <integer name="process_tag_key_travel">15</integer>
-    <integer name="process_tag_key_ignore">16</integer>
-    <integer name="process_tag_key_unknown">0</integer>
+    <integer name="process_key_beautification">1</integer>
+    <integer name="process_key_business">2</integer>
+    <integer name="process_key_communication">3</integer>
+    <integer name="process_key_education">4</integer>
+    <integer name="process_key_finance">5</integer>
+    <integer name="process_key_game">17</integer>
+    <integer name="process_key_lifestyle">6</integer>
+    <integer name="process_key_media">7</integer>
+    <integer name="process_key_news_information">8</integer>
+    <integer name="process_key_online_shopping">9</integer>
+    <integer name="process_key_optimization">10</integer>
+    <integer name="process_key_reading">11</integer>
+    <integer name="process_key_social_network">12</integer>
+    <integer name="process_key_system">13</integer>
+    <integer name="process_key_tool">14</integer>
+    <integer name="process_key_travel">15</integer>
+    <integer name="process_key_ignore">16</integer>
+    <integer name="process_key_unknown">0</integer>
+
+    <integer name="location_key_classroom">1</integer>
+    <integer name="location_key_dinning_hall">2</integer>
+    <integer name="location_key_dorm">3</integer>
+    <integer name="location_key_home">4</integer>
+    <integer name="location_key_lab">5</integer>
+    <integer name="location_key_library">6</integer>
+    <integer name="location_key_office">7</integer>
+    <integer name="location_key_restaurant">8</integer>
+    <integer name="location_key_snack_bar">9</integer>
+    <integer name="location_key_stadium">10</integer>
+    <integer name="location_key_unknown">0</integer>
+
+    <integer name="activity_key_communication">1</integer>
+    <integer name="activity_key_eat">2</integer>
+    <integer name="activity_key_entertainment">10</integer>
+    <integer name="activity_key_game">3</integer>
+    <integer name="activity_key_motion">4</integer>
+    <integer name="activity_key_news_information">5</integer>
+    <integer name="activity_key_sleep">6</integer>
+    <integer name="activity_key_social_network">7</integer>
+    <integer name="activity_key_sports">8</integer>
+    <integer name="activity_key_work_study">9</integer>
+    <integer name="activity_key_unknown">0</integer>
+
 </resources>

@@ -30,7 +30,7 @@ public class WelcomeActivity extends Activity {
                 boolean isFirstTime = isFirstTime();
                 Intent intent;
 
-                if (isFirstTime){
+                if (isFirstTime) {
                     intent = new Intent(WelcomeActivity.this, ProcessTagActivity.class);
                 } else {
                     intent = new Intent(WelcomeActivity.this, MainActivity.class);
@@ -42,7 +42,7 @@ public class WelcomeActivity extends Activity {
 
     }
 
-    private boolean isFirstTime(){
+    private boolean isFirstTime() {
         SharedPreferences spf = WelcomeActivity.this.getSharedPreferences("preference", Context.MODE_PRIVATE);
         return spf.getBoolean("isFirstTime", true);
     }

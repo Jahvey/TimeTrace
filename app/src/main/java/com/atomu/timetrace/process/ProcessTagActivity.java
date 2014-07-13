@@ -1,29 +1,32 @@
 package com.atomu.timetrace.process;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.MotionEvent;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.atomu.timetrace.app.MainActivity;
 import com.atomu.timetrace.app.R;
-import com.atomu.timetrace.effect.TitleScrollListener;
-import com.atomu.timetrace.monitor.ProcessInfo;
+import com.atomu.timetrace.database.TableInstalledHelper;
+import com.atomu.timetrace.effect.ListScrollTitleListener;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,39 +35,15 @@ import java.util.List;
  */
 public class ProcessTagActivity extends Activity {
 
-    private ListView lv_process_tag;
-    private ImageButton ib_process_tag_ok;
-    private ImageButton ib_process_tag_cancel;
-    private TextView tv_process_tag_title;
-    private List<ProcessInfo> processInfoList;
+    private List<ProcessInfo> processInstalled;
 
-    public boolean isUserApp(PackageInfo pInfo) {
-        if (pInfo.applicationInfo != null && (pInfo.applicationInfo.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
-            return true;
-        } else if (pInfo.applicationInfo != null && (pInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-            return true;
+    private void checkFirstTime() {
+        SharedPreferences spf = ProcessTagActivity.this.getSharedPreferences("preference", Context.MODE_PRIVATE);
+        if (spf.getBoolean("isFirstTime", true)) {
+            SharedPreferences.Editor editor = spf.edit();
+            editor.putBoolean("isFirstTime", false);
+            editor.commit();
         }
-        return false;
-    }
-
-    private String getAppName(ApplicationInfo applicationInfo, PackageManager pm) {
-        CharSequence cs = applicationInfo.loadLabel(pm);
-
-        if (cs != null)
-            return cs.toString();
-        return null;
-    }
-
-    private boolean isFirstTime() {
-        SharedPreferences spf = ProcessTagActivity.this.getSharedPreferences("preference", Context.MODE_PRIVATE);
-        return spf.getBoolean("isFirstTime", true);
-    }
-
-    private void savePreference(boolean flag) {
-        SharedPreferences spf = ProcessTagActivity.this.getSharedPreferences("preference", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = spf.edit();
-        editor.putBoolean("isFirstTime", flag);
-        editor.commit();
     }
 
     @Override
@@ -72,41 +51,12 @@ public class ProcessTagActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_process_tag);
 
-        processInfoList = new ArrayList<ProcessInfo>();
-        lv_process_tag = (ListView) findViewById(R.id.lv_process_tag);
-        ib_process_tag_ok = (ImageButton) findViewById(R.id.ib_process_tag_ok);
-        ib_process_tag_cancel = (ImageButton) findViewById(R.id.ib_process_tag_cancel);
-        tv_process_tag_title = (TextView) findViewById(R.id.tv_process_tag_title);
-        lv_process_tag.setOnScrollListener(new TitleScrollListener(tv_process_tag_title));
+        ListView lv_process_tag = (ListView) findViewById(R.id.lv_process_tag);
+        lv_process_tag.setOnScrollListener(new ListScrollTitleListener(findViewById(R.id.tv_process_tag_title)));
+        ImageButton ib_process_tag_ok = (ImageButton) findViewById(R.id.ib_process_tag_ok);
+        ImageButton ib_process_tag_cancel = (ImageButton) findViewById(R.id.ib_process_tag_cancel);
 
-        PackageManager pm = ProcessTagActivity.this.getPackageManager();
-        List<PackageInfo> packs = null;
-        if (pm != null) {
-            packs = pm.getInstalledPackages(0);
-        }
-        if (packs != null) {
-            for (PackageInfo pi : packs) {
-                ApplicationInfo applicationInfo = pi.applicationInfo;
-                if (applicationInfo != null) {
-                    ProcessInfo info = new ProcessInfo();
-                    boolean isUserApp = isUserApp(pi);
-
-                    info.setUserProcess(isUserApp);
-                    if (isUserApp)
-                        info.setTag(ProcessTagActivity.this.getResources().getInteger(R.integer.process_tag_key_lifestyle));
-                    else
-                        info.setTag(ProcessTagActivity.this.getResources().getInteger(R.integer.process_tag_key_lifestyle));
-
-                    info.setAppName(getAppName(applicationInfo, pm));
-                    info.setIcon(applicationInfo.loadIcon(pm));
-
-                    if (info.getAppName() != null)
-                        processInfoList.add(info);
-                }
-
-            }
-        }
-
+        processInstalled = new ProcessInstalledProvider(ProcessTagActivity.this).getInstalled();
         ProcessTagItemAdapter adapter = new ProcessTagItemAdapter();
         lv_process_tag.setAdapter(adapter);
 
@@ -114,16 +64,15 @@ public class ProcessTagActivity extends Activity {
             @Override
             public void onClick(View view) {
                 startMainActivity();
-                if (isFirstTime())
-                    savePreference(false);
+                checkTableInstalled(true);
+                checkFirstTime();
             }
         });
         ib_process_tag_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startMainActivity();
-                if (isFirstTime())
-                    savePreference(true);
+                checkTableInstalled(false);
             }
         });
     }
@@ -134,11 +83,73 @@ public class ProcessTagActivity extends Activity {
         ProcessTagActivity.this.finish();
     }
 
+    private ContentValues getContentValuesFromInfo(ProcessInfo info) {
+        ContentValues values = new ContentValues();
+
+        values.put(getString(R.string.process_info_app_name), info.getAppName());
+        values.put(getString(R.string.process_info_pack_name), info.getPackName());
+        values.put(getString(R.string.process_info_tag), info.getTag());
+        values.put(getString(R.string.process_info_is_user_process), info.isUserProcess());
+        values.put(getString(R.string.process_info_active_time), 0);
+        values.put(getString(R.string.process_info_live_time), 0);
+        values.put(getString(R.string.process_info_start_time), 0);
+
+        return values;
+    }
+
+    private void checkTableInstalled(boolean saveChange) {
+        TableInstalledHelper tableInstalledHelper = new TableInstalledHelper(ProcessTagActivity.this, getString(R.string.database_installed));
+        SQLiteDatabase rdb = tableInstalledHelper.getReadableDatabase();
+        SQLiteDatabase wdb = tableInstalledHelper.getWritableDatabase();
+
+        if (rdb != null) {
+            Cursor cursor = rdb.query(getString(R.string.table_installed), null, null, null, null, null, null);
+
+            if (cursor.getCount() <= 0) {
+                cursor.close();
+                if (wdb != null) {
+                    for (ProcessInfo info : processInstalled) {
+                        wdb.insert(getString(R.string.table_installed), null, getContentValuesFromInfo(info));
+                    }
+                    wdb.close();
+                }
+            } else if (saveChange) {
+                cursor.close();
+                if (wdb != null) {
+                    String[] columns = new String[]{ProcessTagActivity.this.getString(R.string.process_info_pack_name)};
+                    String selection = ProcessTagActivity.this.getString(R.string.process_info_pack_name) + " = ? ";
+                    String whereClause = ProcessTagActivity.this.getString(R.string.process_info_pack_name) + " = ? ";
+
+                    for (ProcessInfo info : processInstalled) {
+                        String[] selectionArgs = new String[]{info.getPackName()};
+                        cursor = rdb.query(ProcessTagActivity.this.getString(R.string.table_installed), columns, selection, selectionArgs, null, null, null);
+
+                        if (cursor.getCount() <= 0) {
+                            wdb.insert(getString(R.string.table_installed), null, getContentValuesFromInfo(info));
+                        } else {
+                            ContentValues values = new ContentValues();
+                            values.put(ProcessTagActivity.this.getString(R.string.process_info_tag), info.getTag());
+
+                            String[] whereArgs = new String[]{info.getPackName()};
+                            wdb.update(ProcessTagActivity.this.getString(R.string.table_installed), values, whereClause, whereArgs);
+                        }
+                        cursor.close();
+                    }
+                }
+            }
+            wdb.close();
+            rdb.close();
+        }
+
+    }
+
     static class ProcessTagItemViewHolder {
         ImageView icon;
         TextView appName;
         TextView isUserApp;
         TextView tag;
+        Button ignore;
+        int position;
     }
 
     private class ProcessTagItemAdapter extends BaseAdapter {
@@ -148,12 +159,12 @@ public class ProcessTagActivity extends Activity {
 
         @Override
         public int getCount() {
-            return processInfoList.size();
+            return processInstalled.size();
         }
 
         @Override
         public Object getItem(int i) {
-            return processInfoList.get(i);
+            return processInstalled.get(i);
         }
 
         @Override
@@ -165,37 +176,56 @@ public class ProcessTagActivity extends Activity {
         public View getView(int i, View view, ViewGroup viewGroup) {
             initViewHolder(view);
 
-            ProcessInfo info = processInfoList.get(i);
+            ProcessInfo info = processInstalled.get(i);
 
             this.holder.icon.setImageDrawable(info.getIcon());
             this.holder.appName.setText(info.getAppName());
             this.holder.tag.setText(info.getTagString(ProcessTagActivity.this));
-            if (info.isUserProcess())
-                this.holder.isUserApp.setText("usr");
-            else
-                this.holder.isUserApp.setText("sys");
+            this.holder.isUserApp.setText((info.isUserProcess()) ? "usr" : "sys");
+            this.holder.ignore.setTag(i);
+            this.holder.position = i;
 
             this.view.setTag(this.holder);
-            this.view.setOnTouchListener(new View.OnTouchListener() {
-                float position = 0;
-
+//            this.view.setOnTouchListener(new ItemSlideBarListener(this.view.findViewById(R.id.btn_process_tag_ignore)));
+//            if (((ProcessInfo) getItem(Integer.valueOf(this.holder.ignore.getTag().toString()))).getTag() == ProcessTagActivity.this.getResources().getInteger(R.integer.process_key_ignore)){
+//                this.holder.ignore.setVisibility(View.GONE);
+//            }
+            this.view.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public boolean onTouch(View view, MotionEvent motionEvent) {
-                    Button btn_ignore = (Button) view.findViewById(R.id.btn_process_tag_ignore);
+                public void onClick(final View view) {
+                    final Spinner sp_ask_process = new Spinner(ProcessTagActivity.this);
+                    String[] items = getResources().getStringArray(R.array.process_tag_array);
+                    ArrayAdapter<String> arrAdapter = new ArrayAdapter<String>(ProcessTagActivity.this, android.R.layout.simple_spinner_dropdown_item, items);
+                    sp_ask_process.setAdapter(arrAdapter);
+                    sp_ask_process.setPrompt(ProcessTagActivity.this.getString(R.string.process_tag_unknown));
 
-                    switch (motionEvent.getAction()){
-                        case MotionEvent.ACTION_DOWN:
-                            position = motionEvent.getX();
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            if (motionEvent.getX() < position){
-                                btn_ignore.setVisibility(View.VISIBLE);
-                            } else {
-                                btn_ignore.setVisibility(View.GONE);
-                            }
-                           break;
-                    }
-                    return true;
+                    new AlertDialog.Builder(ProcessTagActivity.this)
+                            .setTitle("set tag").setIcon(R.drawable.engine)
+                            .setView(sp_ask_process)
+                            .setPositiveButton("set", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    TextView tv_selected = (TextView) sp_ask_process.getSelectedView();
+                                    if (tv_selected != null && tv_selected.getText() != null) {
+                                        String tag = tv_selected.getText().toString();
+                                        int index = ((ProcessTagItemViewHolder) view.getTag()).position;
+
+                                        ((ProcessInfo) getItem(index)).setTag(ProcessTagActivity.this, tag);
+                                        ProcessTagItemAdapter.this.notifyDataSetChanged();
+                                    }
+                                }
+                            })
+                            .setNegativeButton("cancel", null)
+                            .show();
+                }
+            });
+
+            this.holder.ignore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int index = Integer.valueOf(view.getTag().toString());
+                    ((ProcessInfo) getItem(index)).setTag(ProcessTagActivity.this.getResources().getInteger(R.integer.process_key_ignore));
+                    ProcessTagItemAdapter.this.notifyDataSetChanged();
                 }
             });
 
@@ -211,6 +241,7 @@ public class ProcessTagActivity extends Activity {
                 holder.appName = (TextView) view.findViewById(R.id.tv_process_tag_app_name);
                 holder.isUserApp = (TextView) view.findViewById(R.id.tv_process_tag_user_app);
                 holder.tag = (TextView) view.findViewById(R.id.tv_process_tag_tag);
+                holder.ignore = (Button) view.findViewById(R.id.btn_process_tag_ignore);
             } else {
                 view = convertView;
                 holder = (ProcessTagItemViewHolder) view.getTag();

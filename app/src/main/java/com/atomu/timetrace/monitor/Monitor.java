@@ -1,18 +1,31 @@
 package com.atomu.timetrace.monitor;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.atomu.timetrace.app.MainActivity;
 import com.atomu.timetrace.app.R;
-import com.atomu.timetrace.effect.TitleScrollListener;
+import com.atomu.timetrace.database.TableInstalledHelper;
+import com.atomu.timetrace.database.TableRecordHelper;
+import com.atomu.timetrace.effect.ListScrollTitleListener;
+import com.atomu.timetrace.location.LocationInfoMeta;
+import com.atomu.timetrace.location.LocationInfoProvider;
+import com.atomu.timetrace.process.ProcessInfo;
+import com.atomu.timetrace.process.ProcessInfoProvider;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -21,7 +34,7 @@ import java.util.List;
  */
 public class Monitor {
 
-    final static int REFRESH_VIEW_DELAY = 10 * 1000;
+    final static int REFRESH_VIEW_DELAY = 30 * 1000;
     final static int REFRESH_LOCATION_DELAY = 10 * 60 * 1000;
     final static int REFRESH_VIEW_MSG = 1000;
     final static int REFRESH_LOCATION_MSG = 2000;
@@ -43,7 +56,7 @@ public class Monitor {
 
         lv_monitor_process = (ListView) rootView.findViewById(R.id.lv_monitor_process);
         tv_monitor_title = (TextView) rootView.findViewById(R.id.tv_monitor_title);
-        lv_monitor_process.setOnScrollListener(new TitleScrollListener(tv_monitor_title));
+        lv_monitor_process.setOnScrollListener(new ListScrollTitleListener(tv_monitor_title));
 
         processInfoProvider = new ProcessInfoProvider(context);
         processInfoList = processInfoProvider.getProcessInfoList();
@@ -58,7 +71,8 @@ public class Monitor {
                     case Monitor.REFRESH_VIEW_MSG:
                         processInfoList = processInfoProvider.getProcessInfoList();
                         processItemAdapter.notifyDataSetChanged();
-//                        updateTitle(locationInfoProvider.getLocationInfo());
+
+                        checkTableRecord();
                         break;
                     case Monitor.REFRESH_LOCATION_MSG:
                         locationInfoProvider.updateLocationInfo();
@@ -69,20 +83,68 @@ public class Monitor {
         refreshProcess();
         refreshLocation();
 
+//        TableInstalledHelper installedHelper = new TableInstalledHelper(context, context.getString(R.string.database_installed));
+
+//        TableRecordHelper recordHelper = new TableRecordHelper(context, context.getString(R.string.database_record));
+//        SQLiteDatabase record = recordHelper.getReadableDatabase();
+//        if (record != null) {
+//            Cursor cursor = record.query(context.getString(R.string.table_record), null, null, null, null, null, null);
+//            cursor.close();
+//            record.close();
+//        }
     }
 
-//    private void updateTitle(LocationInfo locationInfo) {
-//        if (locationInfo != null) {
-//            StringBuffer sb = new StringBuffer();
-//            sb.append("location: (");
-//            sb.append(new DecimalFormat("0.0000").format(locationInfo.getLongitude()));
-//            sb.append(", ");
-//            sb.append(new DecimalFormat("0.0000").format(locationInfo.getLatitude()));
-//            sb.append(")");//
-//                    ((TextView) getRootView().findViewById(R.id.tv_monitor_title)).setText(sb.toString());
-//        }
-//
-//    }
+    private void checkTableRecord(){
+        long time = Calendar.getInstance().getTimeInMillis();
+        int location = MainActivity.getLocation();
+        double longitude = locationInfoProvider.getLocationInfo().getLongitude();
+        double latitude = locationInfoProvider.getLocationInfo().getLatitude();
+        double speed = locationInfoProvider.getLocationInfo().getSpeed();
+        int activity = MainActivity.getActivity();
+
+        Toast.makeText(context, "gps: (" + longitude + ", " + latitude + ")\nspeed: " + speed +
+                "\nlocation: "+(new LocationInfoMeta()).getTagFromKey(context, location) +
+                "\nactivity: "+(new ActivityInfoMeta()).getTagFromKey(context, activity), Toast.LENGTH_LONG).show();
+
+        TableInstalledHelper installedHelper = new TableInstalledHelper(context, context.getString(R.string.database_installed));
+        SQLiteDatabase rdb = installedHelper.getReadableDatabase();
+        Cursor cursor;
+        String[] columns = new String[]{context.getString(R.string.state_id), context.getString(R.string.process_info_pack_name)};
+        String selection = context.getString(R.string.process_info_pack_name) + " = ? ";
+//        String whereClause = context.getString(R.string.process_info_pack_name) + " = ? ";
+        TableRecordHelper recordHelper = new TableRecordHelper(context, context.getString(R.string.database_record));
+        SQLiteDatabase wdb = recordHelper.getWritableDatabase();
+
+        if (rdb != null && wdb != null){
+            String active =context.getString(R.string.process_info_active);
+            String alive = context.getString(R.string.process_info_alive);
+            ContentValues values = new ContentValues();
+
+            values.put(context.getString(R.string.state_time), time);
+            values.put(context.getString(R.string.state_location), location);
+            values.put(context.getString(R.string.location_info_longitude), longitude);
+            values.put(context.getString(R.string.location_info_latitude), latitude);
+            values.put(context.getString(R.string.location_info_speed), speed);
+            values.put(context.getString(R.string.state_activity), activity);
+            for (ProcessInfo info : processInfoList){
+                String [] selectionArgs = new String[] {info.getPackName()};
+                cursor = rdb.query(context.getString(R.string.table_installed),columns, selection, selectionArgs, null, null, null);
+                if (cursor.moveToNext()){
+                    String prefix = "process_" + cursor.getInt(cursor.getColumnIndex(context.getString(R.string.state_id))) + "_";
+                    cursor.close();
+
+                    values.put(prefix+active, info.isActive());
+                    values.put(prefix+alive, info.isAlive());
+//                    Log.d("record", prefix + active + ": " + info.isActive() + "\n" + prefix + alive + ": " + info.isAlive());
+                }
+            }
+            rdb.close();
+
+            wdb.insert(context.getString(R.string.table_record), null, values);
+            Log.d("record", "000000000000000000000000000000000000000");
+            wdb.close();
+        }
+    }
 
     public Context getContext() {
         return this.context;

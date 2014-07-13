@@ -1,4 +1,4 @@
-package com.atomu.timetrace.monitor;
+package com.atomu.timetrace.location;
 
 import android.content.Context;
 import android.location.Location;
@@ -49,12 +49,13 @@ public class LocationInfoProvider {
                     public void onProviderDisabled(String s) {
 
                     }
-                });
+                }
+        );
 
         locationInfo = new LocationInfo();
     }
 
-    public LocationInfo getLocationInfo(){
+    public LocationInfo getLocationInfo() {
         return locationInfo;
     }
 

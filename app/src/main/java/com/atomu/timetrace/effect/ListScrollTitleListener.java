@@ -7,11 +7,11 @@ import android.widget.AbsListView;
  * Created by Atomu on 2014/7/11.
  * this listener will hide and display a title view with a list scrolling
  */
-public class TitleScrollListener implements AbsListView.OnScrollListener {
+public class ListScrollTitleListener implements AbsListView.OnScrollListener {
     private int lastPosition = 0;
     private View title;
 
-    public TitleScrollListener(View v) {
+    public ListScrollTitleListener(View v) {
         super();
         setTitle(v);
     }

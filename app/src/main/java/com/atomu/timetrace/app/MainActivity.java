@@ -1,13 +1,22 @@
 package com.atomu.timetrace.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
+import android.widget.TextView;
 
+import com.atomu.timetrace.location.LocationInfoMeta;
+import com.atomu.timetrace.monitor.ActivityInfoMeta;
 import com.atomu.timetrace.monitor.Monitor;
 
 /**
@@ -22,6 +31,16 @@ public class MainActivity extends Activity {
     private ImageButton ib_analyze;
     private ImageButton ib_setting;
     private Monitor monitor;
+    private static int location = 0;
+    private static int activity = 0;
+
+    static public int getLocation(){
+        return location;
+    }
+
+    static public int getActivity(){
+        return activity;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +59,41 @@ public class MainActivity extends Activity {
                 rl_monitor.setVisibility(View.VISIBLE);
                 rl_setting.setVisibility(View.GONE);
                 rl_analyze.setVisibility(View.GONE);
+
+                final Spinner sp_ask_location = new Spinner(MainActivity.this);
+                final Spinner sp_ask_activity = new Spinner(MainActivity.this);
+                String [] locationItems = getResources().getStringArray(R.array.location_tag_array);
+                String [] activityItems = getResources().getStringArray(R.array.activity_tag_array);
+                final ArrayAdapter locationAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, locationItems);
+                ArrayAdapter activityAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, activityItems);
+                sp_ask_location.setAdapter(locationAdapter);
+                sp_ask_activity.setAdapter(activityAdapter);
+                sp_ask_location.setPrompt(MainActivity.this.getString(R.string.location_tag_unknown));
+                sp_ask_activity.setPrompt(MainActivity.this.getString(R.string.activity_tag_unknown));
+                
+                LinearLayout ll_ask = new LinearLayout(MainActivity.this);
+                ll_ask.setOrientation(LinearLayout.VERTICAL);
+                ll_ask.addView(sp_ask_location);
+                ll_ask.addView(sp_ask_activity);
+
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle("input location & activity").setIcon(R.drawable.engine)
+                        .setView(ll_ask)
+                        .setPositiveButton("set", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                TextView tv_location = (TextView) sp_ask_location.getSelectedView();
+                                TextView tv_activity = (TextView) sp_ask_activity.getSelectedView();
+                                if (tv_location != null && tv_location.getText() != null){
+                                    location = (new LocationInfoMeta()).getKeyFromTag(MainActivity.this, tv_location.getText().toString());
+                                }
+                                if (tv_activity != null && tv_activity.getText() != null){
+                                    activity = (new ActivityInfoMeta()).getKeyFromTag(MainActivity.this, tv_activity.getText().toString());
+                                }
+                            }
+                        })
+                        .setNegativeButton("cancel", null)
+                        .show();
             }
         });
         ib_analyze.setOnClickListener(new View.OnClickListener() {

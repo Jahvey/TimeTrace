@@ -1,4 +1,4 @@
-package com.atomu.timetrace.monitor;
+package com.atomu.timetrace.process;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -13,16 +13,17 @@ import java.util.Calendar;
  * this class is used to encapsulate information about a process
  */
 public class ProcessInfo {
-    private String appName;
-    private int tag;
     private Drawable icon;
-    private long liveTime;
-    private long memSize;
+    private String appName;
     private String packName;
+    private int tag;
     private int pid;
+    private long memSize;
+    private long liveTime;
     private long startTime;
-    private boolean active;
+    private long activeTime;
     private boolean alive;
+    private boolean active;
     private boolean userProcess;
 
     public String getAppName() {
@@ -93,12 +94,12 @@ public class ProcessInfo {
         return startTime;
     }
 
-    public void setStartTime(long startTime) {
-        this.startTime = startTime;
-    }
-
     public void setStartTime(Calendar startTime) {
         this.startTime = startTime.getTimeInMillis();
+    }
+
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
     }
 
     public boolean isUserProcess() {
@@ -142,4 +143,20 @@ public class ProcessInfo {
         return String.format("%d,  %d:%d:%d", diffDays, diffHours, diffMinutes, diffSecs);
     }
 
+    public long getActiveTime() {
+        return activeTime;
+    }
+
+    public void setActiveTime(long activeTime) {
+        this.activeTime = activeTime;
+    }
+
+    public String getActiveTimeString() {
+        long diffSecs = this.activeTime / 1000 % 60;
+        long diffMinutes = this.activeTime / (60 * 1000) % 60;
+        long diffHours = this.activeTime / (60 * 60 * 1000) % 24;
+        long diffDays = this.activeTime / (24 * 60 * 60 * 1000);
+
+        return String.format("%d,  %d:%d:%d", diffDays, diffHours, diffMinutes, diffSecs);
+    }
 }
