@@ -111,7 +111,6 @@ public class Monitor {
         Cursor cursor;
         String[] columns = new String[]{context.getString(R.string.state_id), context.getString(R.string.process_info_pack_name)};
         String selection = context.getString(R.string.process_info_pack_name) + " = ? ";
-//        String whereClause = context.getString(R.string.process_info_pack_name) + " = ? ";
         TableRecordHelper recordHelper = new TableRecordHelper(context, context.getString(R.string.database_record));
         SQLiteDatabase wdb = recordHelper.getWritableDatabase();
 
@@ -141,7 +140,6 @@ public class Monitor {
             rdb.close();
 
             wdb.insert(context.getString(R.string.table_record), null, values);
-            Log.d("record", "000000000000000000000000000000000000000");
             wdb.close();
         }
     }

@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.atomu.timetrace.analyze.FetchData;
 import com.atomu.timetrace.location.LocationInfoMeta;
 import com.atomu.timetrace.monitor.ActivityInfoMeta;
 import com.atomu.timetrace.monitor.Monitor;
@@ -53,6 +54,7 @@ public class MainActivity extends Activity {
         ib_monitor = (ImageButton) findViewById(R.id.ib_monitor);
         ib_analyze = (ImageButton) findViewById(R.id.ib_analyze);
         ib_setting = (ImageButton) findViewById(R.id.ib_setting);
+
         ib_monitor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,6 +116,8 @@ public class MainActivity extends Activity {
         });
 
         monitor = new Monitor(MainActivity.this, rl_monitor);
+//        FetchData fetch = new FetchData(MainActivity.this);
+//        fetch.fetch();
     }
 
 
