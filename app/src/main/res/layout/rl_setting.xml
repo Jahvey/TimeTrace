@@ -36,8 +36,20 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_above="@id/tv_setting_contact"
-        android:layout_below="@id/ib_setting_contact">
+        android:layout_below="@id/ib_setting_contact" />
 
-    </ListView>
+    <Button
+        android:id="@+id/btn_location_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="location tag"/>
+
+    <Button
+        android:id="@+id/btn_app_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/btn_location_tag"
+        android:text="app tag"/>
 
 </RelativeLayout>

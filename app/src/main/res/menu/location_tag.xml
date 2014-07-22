@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.atomu.timetrace.location.LocationTagActivity">
+
+    <!--<item-->
+    <!--android:id="@+id/mi_search"-->
+    <!--android:icon="@drawable/search"-->
+    <!--android:title="search"-->
+    <!--app:showAsAction="always"-->
+    <!--app:actionViewClass="android.widget.SearchView"/>-->
+    <item
+        android:id="@+id/mi_save_track"
+        android:icon="@android:drawable/ic_menu_save"
+        android:showAsAction="always"
+        android:title="save" />
+
+    <item
+        android:id="@+id/mi_following"
+        android:orderInCategory="1"
+        android:showAsAction="never"
+        android:title="following" />
+
+    <item
+        android:id="@+id/mi_normal_map"
+        android:orderInCategory="2"
+        android:showAsAction="never"
+        android:title="normal" />
+
+    <item
+        android:id="@+id/mi_satellite_map"
+        android:orderInCategory="3"
+        android:showAsAction="never"
+        android:title="satellite" />
+
+</menu>

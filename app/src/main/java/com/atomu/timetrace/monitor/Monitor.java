@@ -1,31 +1,20 @@
 package com.atomu.timetrace.monitor;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.atomu.timetrace.app.MainActivity;
 import com.atomu.timetrace.app.R;
-import com.atomu.timetrace.database.TableInstalledHelper;
-import com.atomu.timetrace.database.TableRecordHelper;
 import com.atomu.timetrace.effect.ListScrollTitleListener;
-import com.atomu.timetrace.location.LocationInfoMeta;
-import com.atomu.timetrace.location.LocationInfoProvider;
 import com.atomu.timetrace.process.ProcessInfo;
 import com.atomu.timetrace.process.ProcessInfoProvider;
 
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -35,15 +24,15 @@ import java.util.List;
 public class Monitor {
 
     final static int REFRESH_VIEW_DELAY = 30 * 1000;
-    final static int REFRESH_LOCATION_DELAY = 10 * 60 * 1000;
+//    final static int REFRESH_LOCATION_DELAY = 10 * 60 * 1000;
     final static int REFRESH_VIEW_MSG = 1000;
-    final static int REFRESH_LOCATION_MSG = 2000;
+//    final static int REFRESH_LOCATION_MSG = 2000;
 
     public Context context;
     public View rootView;
     private ProcessInfoProvider processInfoProvider;
     private List<ProcessInfo> processInfoList;
-    private LocationInfoProvider locationInfoProvider;
+//    private LocationInfoProvider locationInfoProvider;
     private ProcessItemAdapter processItemAdapter;
     private ListView lv_monitor_process;
     private TextView tv_monitor_title;
@@ -63,7 +52,7 @@ public class Monitor {
         processItemAdapter = new ProcessItemAdapter();
         lv_monitor_process.setAdapter(processItemAdapter);
 
-        locationInfoProvider = new LocationInfoProvider(context);
+//        locationInfoProvider = new LocationInfoProvider(context);
         refreshHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -72,16 +61,16 @@ public class Monitor {
                         processInfoList = processInfoProvider.getProcessInfoList();
                         processItemAdapter.notifyDataSetChanged();
 
-                        checkTableRecord();
+//                        checkTableRecord();
                         break;
-                    case Monitor.REFRESH_LOCATION_MSG:
-                        locationInfoProvider.updateLocationInfo();
-                        break;
+//                    case Monitor.REFRESH_LOCATION_MSG:
+//                        locationInfoProvider.updateLocationInfo();
+//                        break;
                 }
             }
         };
         refreshProcess();
-        refreshLocation();
+//        refreshLocation();
 
 //        TableInstalledHelper installedHelper = new TableInstalledHelper(context, context.getString(R.string.database_installed));
 
@@ -94,55 +83,55 @@ public class Monitor {
 //        }
     }
 
-    private void checkTableRecord(){
-        long time = Calendar.getInstance().getTimeInMillis();
-        int location = MainActivity.getLocation();
-        double longitude = locationInfoProvider.getLocationInfo().getLongitude();
-        double latitude = locationInfoProvider.getLocationInfo().getLatitude();
-        double speed = locationInfoProvider.getLocationInfo().getSpeed();
-        int activity = MainActivity.getActivity();
-
-        Toast.makeText(context, "gps: (" + longitude + ", " + latitude + ")\nspeed: " + speed +
-                "\nlocation: "+(new LocationInfoMeta()).getTagFromKey(context, location) +
-                "\nactivity: "+(new ActivityInfoMeta()).getTagFromKey(context, activity), Toast.LENGTH_LONG).show();
-
-        TableInstalledHelper installedHelper = new TableInstalledHelper(context, context.getString(R.string.database_installed));
-        SQLiteDatabase rdb = installedHelper.getReadableDatabase();
-        Cursor cursor;
-        String[] columns = new String[]{context.getString(R.string.state_id), context.getString(R.string.process_info_pack_name)};
-        String selection = context.getString(R.string.process_info_pack_name) + " = ? ";
-        TableRecordHelper recordHelper = new TableRecordHelper(context, context.getString(R.string.database_record));
-        SQLiteDatabase wdb = recordHelper.getWritableDatabase();
-
-        if (rdb != null && wdb != null){
-            String active =context.getString(R.string.process_info_active);
-            String alive = context.getString(R.string.process_info_alive);
-            ContentValues values = new ContentValues();
-
-            values.put(context.getString(R.string.state_time), time);
-            values.put(context.getString(R.string.state_location), location);
-            values.put(context.getString(R.string.location_info_longitude), longitude);
-            values.put(context.getString(R.string.location_info_latitude), latitude);
-            values.put(context.getString(R.string.location_info_speed), speed);
-            values.put(context.getString(R.string.state_activity), activity);
-            for (ProcessInfo info : processInfoList){
-                String [] selectionArgs = new String[] {info.getPackName()};
-                cursor = rdb.query(context.getString(R.string.table_installed),columns, selection, selectionArgs, null, null, null);
-                if (cursor.moveToNext()){
-                    String prefix = "process_" + cursor.getInt(cursor.getColumnIndex(context.getString(R.string.state_id))) + "_";
-                    cursor.close();
-
-                    values.put(prefix+active, info.isActive());
-                    values.put(prefix+alive, info.isAlive());
+//    private void checkTableRecord(){
+//        long time = Calendar.getInstance().getTimeInMillis();
+//        int location = MainActivity.getLocation();
+//        double longitude = locationInfoProvider.getLocationInfo().getLongitude();
+//        double latitude = locationInfoProvider.getLocationInfo().getLatitude();
+//        double speed = locationInfoProvider.getLocationInfo().getSpeed();
+//        int activity = MainActivity.getActivity();
+//
+//        Toast.makeText(context, "gps: (" + longitude + ", " + latitude + ")\nspeed: " + speed +
+//                "\nlocation: "+(new LocationInfoMeta()).hlGetTagFromKey(context, location) +
+//                "\nactivity: "+(new ActivityInfoMeta()).hlGetTagFromKey(context, activity), Toast.LENGTH_LONG).show();
+//
+//        TableInstalledHelper installedHelper = new TableInstalledHelper(context, context.getString(R.string.database_installed));
+//        SQLiteDatabase rdb = installedHelper.getReadableDatabase();
+//        Cursor cursor;
+//        String[] columns = new String[]{context.getString(R.string.state_id), context.getString(R.string.process_info_pack_name)};
+//        String selection = context.getString(R.string.process_info_pack_name) + " = ? ";
+//        TableRecordHelper recordHelper = new TableRecordHelper(context, context.getString(R.string.database_record));
+//        SQLiteDatabase wdb = recordHelper.getWritableDatabase();
+//
+//        if (rdb != null && wdb != null){
+//            String active =context.getString(R.string.process_info_active);
+//            String alive = context.getString(R.string.process_info_alive);
+//            ContentValues values = new ContentValues();
+//
+//            values.put(context.getString(R.string.state_time), time);
+//            values.put(context.getString(R.string.state_location), location);
+//            values.put(context.getString(R.string.location_info_longitude), longitude);
+//            values.put(context.getString(R.string.location_info_latitude), latitude);
+//            values.put(context.getString(R.string.location_info_speed), speed);
+//            values.put(context.getString(R.string.state_activity), activity);
+//            for (ProcessInfo info : processInfoList){
+//                String [] selectionArgs = new String[] {info.getPackName()};
+//                cursor = rdb.query(context.getString(R.string.table_installed),columns, selection, selectionArgs, null, null, null);
+//                if (cursor.moveToNext()){
+//                    String prefix = "process_" + cursor.getInt(cursor.getColumnIndex(context.getString(R.string.state_id))) + "_";
+//                    cursor.close();
+//
+//                    values.put(prefix+active, info.isActive());
+//                    values.put(prefix+alive, info.isAlive());
 //                    Log.d("record", prefix + active + ": " + info.isActive() + "\n" + prefix + alive + ": " + info.isAlive());
-                }
-            }
-            rdb.close();
-
-            wdb.insert(context.getString(R.string.table_record), null, values);
-            wdb.close();
-        }
-    }
+//                }
+//            }
+//            rdb.close();
+//
+//            wdb.insert(context.getString(R.string.table_record), null, values);
+//            wdb.close();
+//        }
+//    }
 
     public Context getContext() {
         return this.context;
@@ -152,9 +141,9 @@ public class Monitor {
         this.context = c;
     }
 
-    public View getRootView() {
-        return this.rootView;
-    }
+//    public View getRootView() {
+//        return this.rootView;
+//    }
 
     public void setRootView(View v) {
         this.rootView = v;
@@ -177,22 +166,22 @@ public class Monitor {
         }).start();
     }
 
-    private void refreshLocation() {
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!Thread.currentThread().isInterrupted()) {
-                    refreshHandler.sendEmptyMessage(Monitor.REFRESH_LOCATION_MSG);
-                    try {
-                        Thread.sleep(Monitor.REFRESH_LOCATION_DELAY);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-    }
+//    private void refreshLocation() {
+//
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (!Thread.currentThread().isInterrupted()) {
+//                    refreshHandler.sendEmptyMessage(Monitor.REFRESH_LOCATION_MSG);
+//                    try {
+//                        Thread.sleep(Monitor.REFRESH_LOCATION_DELAY);
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
+//    }
 
     static class ProcessItemViewHolder {
         ImageView icon;

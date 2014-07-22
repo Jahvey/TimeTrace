@@ -5,12 +5,10 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -22,7 +20,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.atomu.timetrace.app.MainActivity;
 import com.atomu.timetrace.app.R;
 import com.atomu.timetrace.database.TableInstalledHelper;
 import com.atomu.timetrace.effect.ListScrollTitleListener;
@@ -63,24 +60,18 @@ public class ProcessTagActivity extends Activity {
         ib_process_tag_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startMainActivity();
                 checkTableInstalled(true);
                 checkFirstTime();
+                finish();
             }
         });
         ib_process_tag_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startMainActivity();
                 checkTableInstalled(false);
+                finish();
             }
         });
-    }
-
-    private void startMainActivity() {
-        Intent intent = new Intent(ProcessTagActivity.this, MainActivity.class);
-        ProcessTagActivity.this.startActivity(intent);
-        ProcessTagActivity.this.finish();
     }
 
     private ContentValues getContentValuesFromInfo(ProcessInfo info) {

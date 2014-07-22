@@ -19,28 +19,27 @@
     <integer name="process_key_ignore">16</integer>
     <integer name="process_key_unknown">0</integer>
 
-    <integer name="location_key_classroom">1</integer>
-    <integer name="location_key_dinning_hall">2</integer>
-    <integer name="location_key_dorm">3</integer>
-    <integer name="location_key_home">4</integer>
-    <integer name="location_key_lab">5</integer>
-    <integer name="location_key_library">6</integer>
-    <integer name="location_key_office">7</integer>
-    <integer name="location_key_restaurant">8</integer>
-    <integer name="location_key_snack_bar">9</integer>
-    <integer name="location_key_stadium">10</integer>
-    <integer name="location_key_unknown">0</integer>
+    <integer name="loc_tag_classroom">1</integer>
+    <integer name="loc_tag_dinning">2</integer>
+    <integer name="loc_tag_dorm">3</integer>
+    <integer name="loc_tag_lab">4</integer>
+    <integer name="loc_tag_office">5</integer>
+    <integer name="loc_tag_library">6</integer>
+    <integer name="loc_tag_home">7</integer>
+    <integer name="loc_tag_restaurant">8</integer>
+    <integer name="loc_tag_stadium">9</integer>
+    <integer name="loc_tag_street">10</integer>
+    <integer name="loc_tag_park">11</integer>
+    <integer name="loc_tag_theater">12</integer>
+    <integer name="loc_tag_mall">13</integer>
+    <integer name="loc_tag_snack">14</integer>
+    <integer name="loc_tag_unknown">0</integer>
 
-    <integer name="activity_key_communication">1</integer>
-    <integer name="activity_key_eat">2</integer>
-    <integer name="activity_key_entertainment">10</integer>
-    <integer name="activity_key_game">3</integer>
-    <integer name="activity_key_motion">4</integer>
-    <integer name="activity_key_news_information">5</integer>
-    <integer name="activity_key_sleep">6</integer>
-    <integer name="activity_key_social_network">7</integer>
-    <integer name="activity_key_sports">8</integer>
-    <integer name="activity_key_work_study">9</integer>
-    <integer name="activity_key_unknown">0</integer>
+    <integer name="hl_act_tag_eat">1</integer>
+    <integer name="hl_act_tag_sleep">2</integer>
+    <integer name="hl_act_tag_work">3</integer>
+    <integer name="hl_act_tag_motion">4</integer>
+    <integer name="hl_act_tag_relax">5</integer>
+    <integer name="hl_act_tag_trifle">6</integer>
 
 </resources>

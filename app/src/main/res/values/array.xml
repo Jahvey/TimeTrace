@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--<string-array name="location_tag_array">-->
+        <!--<item>@string/location_tag_classroom</item>-->
+        <!--<item>@string/location_tag_dinning_hall</item>-->
+        <!--<item>@string/location_tag_dorm</item>-->
+        <!--<item>@string/location_tag_home</item>-->
+        <!--<item>@string/location_tag_lab</item>-->
+        <!--<item>@string/location_tag_library</item>-->
+        <!--<item>@string/location_tag_office</item>-->
+        <!--<item>@string/location_tag_restaurant</item>-->
+        <!--<item>@string/location_tag_snack_bar</item>-->
+        <!--<item>@string/location_tag_stadium</item>-->
+        <!--<item>@string/location_tag_unknown</item>-->
+    <!--</string-array>-->
+
+    <string-array name="process_tag_array">
+        <item>@string/process_tag_beautification</item>
+        <item>@string/process_tag_business</item>
+        <item>@string/process_tag_communication</item>
+        <item>@string/process_tag_education</item>
+        <item>@string/process_tag_finance</item>
+        <item>@string/process_tag_game</item>
+        <item>@string/process_tag_ignore</item>
+        <item>@string/process_tag_lifestyle</item>
+        <item>@string/process_tag_media</item>
+        <item>@string/process_tag_news_information</item>
+        <item>@string/process_tag_online_shopping</item>
+        <item>@string/process_tag_optimization</item>
+        <item>@string/process_tag_reading</item>
+        <item>@string/process_tag_social_network</item>
+        <item>@string/process_tag_system</item>
+        <item>@string/process_tag_tool</item>
+        <item>@string/process_tag_travel</item>
+        <item>@string/process_tag_unknown</item>
+    </string-array>
+
+    <!--<string-array name="activity_tag_array">-->
+        <!--<item>@string/activity_tag_communication</item>-->
+        <!--<item>@string/activity_tag_eat</item>-->
+        <!--<item>@string/activity_tag_entertainment</item>-->
+        <!--<item>@string/activity_tag_game</item>-->
+        <!--<item>@string/activity_tag_motion</item>-->
+        <!--<item>@string/activity_tag_news_information</item>-->
+        <!--<item>@string/activity_tag_sleep</item>-->
+        <!--<item>@string/activity_tag_social_network</item>-->
+        <!--<item>@string/activity_tag_sports</item>-->
+        <!--<item>@string/activity_tag_work_study</item>-->
+        <!--<item>@string/activity_tag_unknown</item>-->
+    <!--</string-array>-->
+
+    <string-array name="hl_act_tags">
+        <item>@string/hl_act_tag_eat</item>
+        <item>@string/hl_act_tag_sleep</item>
+        <item>@string/hl_act_tag_work</item>
+        <item>@string/hl_act_tag_motion</item>
+        <item>@string/hl_act_tag_relax</item>
+        <item>@string/hl_act_tag_trifle</item>
+    </string-array>
+
+    <string-array name="loc_tags">
+        <item>@string/loc_tag_classroom</item>
+        <item>@string/loc_tag_dinning</item>
+        <item>@string/loc_tag_dorm</item>
+        <item>@string/loc_tag_lab</item>
+        <item>@string/loc_tag_office</item>
+        <item>@string/loc_tag_library</item>
+        <item>@string/loc_tag_home</item>
+        <item>@string/loc_tag_restaurant</item>
+        <item>@string/loc_tag_stadium</item>
+        <item>@string/loc_tag_street</item>
+        <item>@string/loc_tag_park</item>
+        <item>@string/loc_tag_theater</item>
+        <item>@string/loc_tag_mall</item>
+        <item>@string/loc_tag_snack</item>
+        <item>@string/loc_tag_unknown</item>
+    </string-array>
+
+</resources>
