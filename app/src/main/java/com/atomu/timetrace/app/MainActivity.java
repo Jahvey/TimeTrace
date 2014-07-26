@@ -24,17 +24,12 @@ import com.baidu.mapapi.utils.DistanceUtil;
 import java.util.Calendar;
 
 public class MainActivity extends Activity {
-
-    final private int scanSpan = 5000;
-    final private double coorError = 0.1;
     final private int distError = 30;
     final private int timeError = 30 * 60 * 1000;
+    final private int scanSpan = 5000;
     private RelativeLayout rl_monitor;
     private RelativeLayout rl_analyze;
     private RelativeLayout rl_setting;
-    private ImageButton ib_monitor;
-    private ImageButton ib_analyze;
-    private ImageButton ib_setting;
     private Monitor monitor;
     private SettingManager settingManager;
     private LocationInfoProvider locationInfoProvider;
@@ -46,20 +41,16 @@ public class MainActivity extends Activity {
 
         //在使用SDK各组件之前初始化context信息，传入ApplicationContext
         //注意该方法要再setContentView方法之前实现
-        try{
-            SDKInitializer.initialize(getApplicationContext());
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        SDKInitializer.initialize(getApplicationContext());
 
         setContentView(R.layout.activity_main);
 
         rl_monitor = (RelativeLayout) findViewById(R.id.rl_monitor);
         rl_analyze = (RelativeLayout) findViewById(R.id.rl_analyze);
         rl_setting = (RelativeLayout) findViewById(R.id.rl_setting);
-        ib_monitor = (ImageButton) findViewById(R.id.ib_monitor);
-        ib_analyze = (ImageButton) findViewById(R.id.ib_analyze);
-        ib_setting = (ImageButton) findViewById(R.id.ib_setting);
+        ImageButton ib_monitor = (ImageButton) findViewById(R.id.ib_monitor);
+        ImageButton ib_analyze = (ImageButton) findViewById(R.id.ib_analyze);
+        ImageButton ib_setting = (ImageButton) findViewById(R.id.ib_setting);
 
         ib_monitor.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,41 +58,6 @@ public class MainActivity extends Activity {
                 rl_monitor.setVisibility(View.VISIBLE);
                 rl_setting.setVisibility(View.GONE);
                 rl_analyze.setVisibility(View.GONE);
-
-//                final Spinner sp_ask_location = new Spinner(MainActivity.this);
-//                final Spinner sp_ask_activity = new Spinner(MainActivity.this);
-//                String [] locationItems = getResources().getStringArray(R.array.location_tag_array);
-//                String [] activityItems = getResources().getStringArray(R.array.activity_tag_array);
-//                final ArrayAdapter locationAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, locationItems);
-//                ArrayAdapter activityAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_spinner_dropdown_item, activityItems);
-//                sp_ask_location.setAdapter(locationAdapter);
-//                sp_ask_activity.setAdapter(activityAdapter);
-//                sp_ask_location.setPrompt(MainActivity.this.getString(R.string.location_tag_unknown));
-//                sp_ask_activity.setPrompt(MainActivity.this.getString(R.string.activity_tag_unknown));
-//
-//                LinearLayout ll_ask = new LinearLayout(MainActivity.this);
-//                ll_ask.setOrientation(LinearLayout.VERTICAL);
-//                ll_ask.addView(sp_ask_location);
-//                ll_ask.addView(sp_ask_activity);
-//
-//                new AlertDialog.Builder(MainActivity.this)
-//                        .setTitle("input location & activity").setIcon(R.drawable.engine)
-//                        .setView(ll_ask)
-//                        .setPositiveButton("set", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialogInterface, int i) {
-//                                TextView tv_location = (TextView) sp_ask_location.getSelectedView();
-//                                TextView tv_activity = (TextView) sp_ask_activity.getSelectedView();
-//                                if (tv_location != null && tv_location.getText() != null){
-//                                    location = (new LocationInfoMeta()).hlGetKeyFromTag(MainActivity.this, tv_location.getText().toString());
-//                                }
-//                                if (tv_activity != null && tv_activity.getText() != null){
-//                                    activity = (new ActivityInfoMeta()).hlGetKeyFromTag(MainActivity.this, tv_activity.getText().toString());
-//                                }
-//                            }
-//                        })
-//                        .setNegativeButton("cancel", null)
-//                        .show();
             }
         });
         ib_analyze.setOnClickListener(new View.OnClickListener() {
@@ -132,6 +88,7 @@ public class MainActivity extends Activity {
 //        PendingIntent collectSender = PendingIntent.getService(MainActivity.this, 0, collectIntent, 0);
 //        am.cancel(collectSender);
 //        am.setRepeating(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime(), scanSpan, collectSender);
+
     }
 
 
@@ -166,21 +123,28 @@ public class MainActivity extends Activity {
         @Override
         public void onReceiveLocation(BDLocation location) {
 
-            Log.d("map", "location listener is awake: (" + location.getLatitude() + ", " + location.getLongitude() + ")");
             if (location == null)
                 return;
 
             if (locationHelper == null)
-                locationHelper = new TableLocationHelper(MainActivity.this, TableLocationHelper.DATABASE_NAME);
+                locationHelper = new TableLocationHelper(getApplicationContext(), TableLocationHelper.DATABASE_NAME);
 
             LocationInfo lastLocation = locationInfoProvider.getLocationInfo();
             SQLiteDatabase wdb = locationHelper.getWritableDatabase();
 
-            if (wdb != null && (lastLocation == null || (!location.getTime().equals(lastLocation.getTimeStr()) &&
-                    location.getLongitude() > coorError && location.getLatitude() > coorError &&
-                    (DistanceUtil.getDistance(new LatLng(location.getLatitude(), location.getLongitude()),
-                            new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude())) > distError)) ||
-                    Calendar.getInstance().getTimeInMillis() - lastLocation.getTime() > timeError)) {
+            long timeDiff;
+            double dist;
+
+            if (lastLocation == null){
+                timeDiff = 24 * 60 * 60 * 1000;
+                dist = 0;
+            }
+            else{
+                timeDiff = Calendar.getInstance().getTimeInMillis() - lastLocation.getTime();
+                dist = DistanceUtil.getDistance(new LatLng(location.getLatitude(), location.getLongitude()), new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()));
+            }
+
+            if (wdb != null && (lastLocation == null || (dist * 1000.0 / timeDiff) < 400 && (dist > distError || timeDiff > timeError))) {
 
                 locationInfoProvider.updateLocation(location);
 
@@ -212,11 +176,6 @@ public class MainActivity extends Activity {
                 wdb.insert(TableLocationHelper.TABLE_NAME, null, values);
                 wdb.close();
             }
-        }
-
-        @Override
-        public void onReceivePoi(BDLocation bdLocation) {
-
         }
 
     }
