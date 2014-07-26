@@ -165,7 +165,7 @@ public class LocationTagActivity extends Activity {
         option.setOpenGps(true);// 打开gps
         option.setCoorType(COOR_TYPE); // 设置坐标类型
         option.setProdName(getString(R.string.app_name));
-        option.setPriority(LocationClientOption.GpsFirst);
+//        option.setPriority(LocationClientOption.GpsFirst);
         locationClient.setLocOption(option);
         locationClient.registerLocationListener(new ShowTrackListener());
     }
@@ -427,10 +427,10 @@ public class LocationTagActivity extends Activity {
 
         }
 
-        @Override
-        public void onReceivePoi(BDLocation bdLocation) {
-
-        }
+//        @Override
+//        public void onReceivePoi(BDLocation bdLocation) {
+//
+//        }
 
     }
 

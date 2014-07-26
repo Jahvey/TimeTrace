@@ -36,7 +36,7 @@ public class LocationInfoProvider {
         option.setCoorType(COOR_TYPE); // 设置坐标类型
         option.setProdName(context.getString(R.string.app_name));
         option.setScanSpan(scanSpan);
-        option.setPriority(LocationClientOption.GpsFirst);
+//        option.setPriority(LocationClientOption.GpsFirst);
         mLocationClient.setLocOption(option);
 
         locationInfo = new LocationInfo();
@@ -48,7 +48,7 @@ public class LocationInfoProvider {
         String timeStr = TableLocationHelper.COL_TIME_STR;
         String time = TableLocationHelper.COL_TIME;
         String[] columns = new String[]{latitude, longitude, time, timeStr};
-        Cursor cursor = null;
+        Cursor cursor;
         if (rdb != null) {
             cursor = rdb.query(TableLocationHelper.TABLE_NAME, columns, null, null, null, null, null);
             if (cursor.moveToLast()) {
@@ -56,6 +56,8 @@ public class LocationInfoProvider {
                 locationInfo.setLatitude(cursor.getDouble(cursor.getColumnIndex(latitude)));
                 locationInfo.setTime(cursor.getLong(cursor.getColumnIndex(time)));
                 locationInfo.setTimeStr(cursor.getString(cursor.getColumnIndex(timeStr)));
+            } else {
+                locationInfo = null;
             }
         }
 
@@ -92,7 +94,7 @@ public class LocationInfoProvider {
         locationInfo.setAddr(location.getAddrStr());
         locationInfo.setAltitude(location.getAltitude());
         locationInfo.setCoorType(location.getCoorType());
-        locationInfo.setDirect(location.getDerect());
+        locationInfo.setDirect(location.getDirection());
         locationInfo.setDistrict(location.getDistrict());
         locationInfo.setRadius(location.getRadius());
         locationInfo.setProvince(location.getProvince());
